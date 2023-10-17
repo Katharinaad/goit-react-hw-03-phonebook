@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { LS_CONTACTS_KEY } from './constants/localStorageKey';
 
 export class App extends Component {
   state = {
@@ -14,6 +15,25 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    // Load contacts from localStorage when the component mounts
+    const stringifiedContacts = localStorage.getItem(LS_CONTACTS_KEY);
+    const parsedContacts =
+      JSON.parse(stringifiedContacts) ?? this.state.contacts;
+
+    this.setState({
+      contacts: parsedContacts,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Save contacts to localStorage when the state changes
+    if (this.state.contacts.length !== prevState.contacts.length) {
+      const stringifiedContacts = JSON.stringify(this.state.contacts);
+      localStorage.setItem(LS_CONTACTS_KEY, stringifiedContacts);
+    }
+  }
 
   handleInputChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
