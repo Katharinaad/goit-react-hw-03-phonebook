@@ -19,12 +19,13 @@ export class App extends Component {
   componentDidMount() {
     // Load contacts from localStorage when the component mounts
     const stringifiedContacts = localStorage.getItem(LS_CONTACTS_KEY);
-    const parsedContacts =
-      JSON.parse(stringifiedContacts) ?? this.state.contacts;
+    const parsedContacts = JSON.parse(stringifiedContacts);
 
-    this.setState({
-      contacts: parsedContacts,
-    });
+    if (parsedContacts) {
+      this.setState({
+        contacts: parsedContacts,
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
